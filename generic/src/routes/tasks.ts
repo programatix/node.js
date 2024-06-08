@@ -1,133 +1,88 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
-import * as Task from '../models/task';
-import createHttpError, { HttpError } from "http-errors";
 import { Tspec } from 'tspec';
+import { ProblemDetails } from "../middlewares/problem-details-response";
+import { Task, TaskRequest, TaskResponse} from '../models/task';
+import createHttpError, { HttpError } from "http-errors";
 
 var createError = require('http-errors');
 
 const router = Router();
-let tasks: Task.Task[] = [];
+let tasks: Task[] = [];
 
 type TasksApiSpec = Tspec.DefineApiSpec<{
-    tags: ['Tasks'],
+    tags: ["Tasks"],
     paths: {
-        '/tasks': {
+        "/tasks": {
             get: {
                 summary: "Get a list of tasks",
-                description: "",
-                responses: { 200: Array<Task.TaskResponse> },
+                description: "Get all available tasks.",
+                responses: { 200: TaskResponse[] },
             },
             post: {
-                summary: "Creates new task",
-                description: "",
-                body: Task.TaskRequest,
-                responses: { 201: Task.TaskResponse },
+                summary: "Create a task",
+                description: "Create a new task",
+                body: TaskRequest,
+                responses: { 201: TaskResponse },
             },
+        },
+        "/tasks/{id}": {
+            get: {
+                summary: "Get a task",
+                description: "Get a specific task by ID.",
+                path: {
+                    /** The identifier of the task to retrieve */
+                    id: number
+                },
+                responses: {
+                    200: TaskResponse,
+                    404: ProblemDetails
+                },
+            },
+            put: {
+                summary: "Update a task",
+                description: "Update a specific task by ID.",
+                path: {
+                    /** The identifier of the task to update */
+                    id: number
+                },
+                body: TaskRequest,
+                responses: {
+                    200: TaskResponse,
+                    404: ProblemDetails
+                },
+            },
+            delete: {
+                summary: "Delete a task",
+                description: "Delete a specific task by ID.",
+                path: {
+                    /** The identifier of the task to delete */
+                    id: number
+                },
+                responses: {
+                    /** Task deleted */
+                    204: "",
+                    /** Invalid params */
+                    400: ProblemDetails
+                    /** Task not found */
+                    404: ProblemDetails
+                }
+            }
         }
     },
 }>;
 
-/**
- * @swagger
- * components: {
- *   schemas: {
-        TaskRequest: {a
-            type: object,
-            properties: {
-                title: {
-                    description: The task title,
-                    type: string,
-                    required: true
-                },
-                description: {
-                    description: The task description,
-                    type: string,
-                    required: true
-                },
-                completed: {
-                    description: The task status,
-                    type: boolean,
-                    required: true
-                }
-            },
-            example: {
-                title: Call John Doe,
-                description: A note to call John Doe,
-                completed: false
-            }
-        },
-        TaskResponse: {
-            properties: {
-                id: {
-                    desciption: The task identifie,
-                    type: string
-                },
-                title: {
-                    description: The task title,
-                    type: string
-                },
-                description: {
-                    description: The task description,
-                    type: string,
-                },
-                completed: {
-                    description: The task status,
-                    type: boolean,
-                }
-            },
-            example: {
-                title: Call John Doe,
-                description: A note to call John Doe,
-                completed: false
-            }
-        }
-    }
- }
- */
 const taskValidationRules = [
     body('title').notEmpty().withMessage('Title is required'),
     body('description').notEmpty().withMessage('Description is required'),
     body('completed').isBoolean().withMessage('Completed must be a boolean'),
 ];
 
-/**
- * @swagger
- *  tags: {
- *      name: Tasks,
- *      description: Tasks management
- *  }
- */
+router.get('/', (req: Request, res: Response<Array<Task>>) => {
+    res.json(tasks);
+});
 
-/**
- * @swagger
- *  /tasks: {
- *      post: {
-            tags: [Tasks],
-            summary: Creates new task,
-            description: ,
-            produces: {
-                application/json
-            },
-            requestBody: {
-                required: true,
-                content: {
-                    application/json: {
-                        schema: {
-                            $ref: "#/components/schemas/TaskRequest"
-                        }
-                    }
-                }
-            },
-            responses: {
-                201: {
-                    description: Created
-                }
-            }
-        }
-    }
- */
-router.post('/', taskValidationRules, (req: Request<Task.TaskRequest>, res: Response<Task.TaskResponse>) => {
+router.post('/', taskValidationRules, (req: Request<TaskRequest>, res: Response<TaskResponse>) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -135,7 +90,7 @@ router.post('/', taskValidationRules, (req: Request<Task.TaskRequest>, res: Resp
         throw createHttpError(err.status, err, { invalidParams: errors.array() });
     }
 
-    const task: Task.Task = {
+    const task: Task = {
         id: tasks.length + 1,
         title: req.body.title,
         description: req.body.description,
@@ -146,54 +101,7 @@ router.post('/', taskValidationRules, (req: Request<Task.TaskRequest>, res: Resp
     res.status(201).json(task);
 });
 
-/**
- * @swagger
- * /tasks:
- *  get:
- *      tags: [Tasks]
- *      summary: Get a list of tasks
- *      produces:
- *          - application/json
- *      responses:
- *          200:
- *              description: Fetched successfully
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: array
- *                          items:
- *                              $ref: "#/components/schemas/TaskResponse"
- * 
- */
-router.get('/', (req: Request, res: Response<Array<Task.Task>>) => {
-    res.json(tasks);
-});
-
-/**
- * @swagger
- * /tasks/{id}:
- *  get:
- *   tags: [Tasks]
- *   summary: Get a task
- *   description: Get a specific task by ID.
- *   parameters:
- *   - in: path
- *     name: id
- *     required: true
- *     description: ID of the task to retrieve.
- *   schema:
- *    type: string
- *   responses:
- *    200:
- *     description: Fetched successfully
- *     content:
- *      application/json:
- *       schema:
- *        $ref: "#/components/schemas/TaskResponse"
- *    401:
- *     description: Task not found
- */
-router.get('/:id', (req: Request, res: Response<Task.Task>) => {
+router.get('/:id', (req: Request, res: Response<Task>) => {
     const task = tasks.find((t) => t.id === parseInt(req.params.id));
 
     if (!task) {
