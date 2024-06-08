@@ -1,0 +1,8 @@
+{
+    "specVersion": 3,
+    "openapi": {
+        "title": "xCustomServer API",
+        "version": "1.0.0",
+        "description": "A Xentral add-in under the heavenly might of the Little Dragon."
+    }
+}
