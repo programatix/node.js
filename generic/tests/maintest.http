@@ -1,0 +1,42 @@
+@host = http://localhost:3000
+
+###
+
+# @name getTasks
+GET {{host}}/tasks HTTP/1.1
+
+###
+
+# @name createTask
+POST {{host}}/tasks HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Things to do",
+    "description": "The description of things to do",
+    "completed": false
+}
+
+###
+
+@taskId = {{createTask.response.body.$.id}}
+
+# @name getTask
+GET {{host}}/tasks/{{taskId}} HTTP/1.1
+
+###
+
+# @name updateTask
+PUT {{host}}/tasks/{{taskId}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "Things to do",
+    "description": "The description of things to do",
+    "completed": true
+}
+
+###
+
+# @name deleteTask
+DELETE {{host}}/tasks/{{taskId}} HTTP/1.1

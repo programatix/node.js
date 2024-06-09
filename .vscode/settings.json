@@ -1,0 +1,10 @@
+{
+    "rest-client.previewOption": "full",
+    "rest-client.environmentVariables": {
+        "$shared": {},
+        "local": {
+            "version": "v2",
+            "host": "http://localhost:3000"
+        }
+    }
+}
