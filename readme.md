@@ -15,10 +15,10 @@ Sample servers are provided, placed in folders with the format, `server-[package
 
 Using the OpenAPI documentation (json or yaml format), it can be feed into Swagger UI (self hosted or uploaded to https://editor.swagger.io/), you'll obtain a Swagger UI page as shown below. Here the developers can use it to perform quick tests on the REST APIs that they developed. It also allow the Software Assurance team to familiarize themselves with the REST APIs.
 
-![Swagger UI](./images/swaggerui.png)  
+![Swagger UI](images/swaggerui.png)  
 *Swagger UI*
 
-![OpenAPI Documentation](./images/openapi_doc.png)  
+![OpenAPI Documentation](images/openapi_doc.png)  
 *OpenAPI Documentation (json)*
 
 The above is the OpenAPI documentation in json format.
@@ -26,7 +26,7 @@ The above is the OpenAPI documentation in json format.
 # Test Tools
 ## Rest Client Extension for Visual Studio
 
-![Rest Client Extension](./images/rest_client_extension.png)  
+![Rest Client Extension](images/rest_client_howtouse.gif)  
 *Rest Client .html file and HTTP request result*
 
 REST Client (https://github.com/Huachao/vscode-restclient) allows you to send HTTP request and view the response in Visual Studio Code directly. It eliminates the need for a separate tool to test REST APIs and makes API testing convenient and efficient.
@@ -35,7 +35,7 @@ REST Client (https://github.com/Huachao/vscode-restclient) allows you to send HT
 
 ## Flashpost
 
-![Flashpost](./images/flashpost.png)  
+![Flashpost](images/flashpost_howtouse.gif)  
 *Flashpost Test Runner*
 
 Flashpost (https://github.com/subasraj/flashpost-support/tree/main), a VS Code extension enables you to develop and test your REST APIs directly from Visual Studio Code.
@@ -43,14 +43,13 @@ Flashpost (https://github.com/subasraj/flashpost-support/tree/main), a VS Code e
 Flashpost test scripts are located in ./Flashpost-tests
 
 ## Bruno
-![Bruno](./images/bruno.png)  
+![Bruno](images/bruno_howtouse.gif)
 *Bruno Test Runner*
 
-![Bruno Test Report - Summary](./images/bruno_test_report_summary.png)  
+![Bruno Test Report](images/bruno_report.gif)
 *Bruno Test Report - Summary (html)*
 
-
-![Bruno Test Report - Requests](./images/bruno_test_report_requests.png)  
+![Bruno Test Report - Requests](images/bruno_test_report_requests.png)  
 *Bruno Test Report - Requests (html)*
 
 Bruno (https://www.usebruno.com/) is a Fast and Git-Friendly Opensource API client, aimed at revolutionizing the status quo represented by Postman, Insomnia and similar tools out there.
@@ -77,7 +76,7 @@ Included in the sample server is the problem details response middleware which c
 ```
 throw new createHttpError.NotFound("Task not found");
 ```
-![RestAPI - Not Found](./images/restapi_not_found.png)
+![RestAPI - Not Found](images/restapi_not_found.png)
 
 ### Example #2
 ```
@@ -88,4 +87,4 @@ if (!errors.isEmpty()) {
   throw createHttpError(err.status, err, { invalidParams: errors.array() });
 }
 ```
-![RestAPI - Bad Request](./images/restapi_bad_request.png)
+![RestAPI - Bad Request](images/restapi_bad_request.png)
