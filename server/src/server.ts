@@ -6,11 +6,6 @@ import formRoutes from './routes/form';
 import taskRoutes from './routes/tasks';
 import fetchDemoRoutes from './routes/fetchDemo';
 
-// import swaggerUI from 'swagger-ui-express';
-// import swaggerSpec from './swagger';
-
-import { TspecDocsMiddleware } from 'tspec';
-
 import problemDetailsResponseMiddleware from "./middlewares/problem-details-response";
 
 dotenv.config();
@@ -28,9 +23,6 @@ const initServer = async () => {
   app.use('/form', formRoutes);
   app.use('/tasks', taskRoutes);
   app.use('/fetchDemo', fetchDemoRoutes);
-
-  // Serve Swagger documentation
-  app.use('/api-docs', await TspecDocsMiddleware());
 
   app.use(problemDetailsResponseMiddleware);
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
