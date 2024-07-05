@@ -13,8 +13,9 @@ const swaggerDefinition = {
 const options = {
     swaggerDefinition,
     apis: [
+        path.join(__dirname, "./routes/*.{ts,js}")/*,
         path.join(__dirname, "./routes/*.js"),
-        path.join(__dirname, "./routes/*.ts")
+        path.join(__dirname, "./routes/*.ts")*/
     ], // Paths to the API routes in your Node.js application
 };
 

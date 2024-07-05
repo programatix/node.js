@@ -34,7 +34,7 @@ export interface ProblemDetails {
     "invalid-params"?: Array<InvalidParams>
 };
 
-export type InvalidParams = {
+export interface InvalidParams {
     /** Field name */    
     name: string,
     /** Reason */

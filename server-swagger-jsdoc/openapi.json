@@ -1,13 +1,14 @@
 {
   "info": {
     "title": "xCustomServer API",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "description": "A Xentral add-in under the heavenly might of the Little Dragon."
   },
   "openapi": "3.0.3",
   "paths": {
     "/tasks": {
       "get": {
-        "operationId": "TasksApiSpec_get_/tasks",
+        "operationId": "getTaskList",
         "tags": [
           "Tasks"
         ],
@@ -31,7 +32,7 @@
         }
       },
       "post": {
-        "operationId": "TasksApiSpec_post_/tasks",
+        "operationId": "addTask",
         "tags": [
           "Tasks"
         ],
@@ -85,11 +86,20 @@
             }
           }
         }
+      },
+      "delete": {
+        "operationId": "TasksApiSpec_delete_/tasks",
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "jgjhgjh",
+        "parameters": [],
+        "responses": {}
       }
     },
     "/tasks/{id}": {
       "get": {
-        "operationId": "TasksApiSpec_get_/tasks/{id}",
+        "operationId": "getTask",
         "tags": [
           "Tasks"
         ],
@@ -130,7 +140,7 @@
         }
       },
       "put": {
-        "operationId": "TasksApiSpec_put_/tasks/{id}",
+        "operationId": "updateTask",
         "tags": [
           "Tasks"
         ],
@@ -206,7 +216,7 @@
         }
       },
       "delete": {
-        "operationId": "TasksApiSpec_delete_/tasks/{id}",
+        "operationId": "deleteTask",
         "tags": [
           "Tasks"
         ],
@@ -232,8 +242,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails",
-                  "description": "Invalid params"
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -243,8 +252,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails",
-                  "description": "Task not found"
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -335,22 +343,7 @@
             "description": "Invalid params list",
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "description": "Field name",
-                  "type": "string"
-                },
-                "reason": {
-                  "description": "Reason",
-                  "type": "string"
-                }
-              },
-              "additionalProperties": false,
-              "required": [
-                "name",
-                "reason"
-              ]
+              "$ref": "#/components/schemas/InvalidParams"
             }
           }
         },
@@ -359,6 +352,24 @@
           "status",
           "title",
           "type"
+        ]
+      },
+      "InvalidParams": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Field name",
+            "type": "string"
+          },
+          "reason": {
+            "description": "Reason",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "reason"
         ]
       }
     }

@@ -15,19 +15,22 @@ type TasksApiSpec = Tspec.DefineApiSpec<{
     paths: {
         "/tasks": {
             get: {
+                operationId: "getTaskList",
                 summary: "Get a list of tasks",
                 description: "Get all available tasks.",
                 responses: { 200: TaskResponse[] },
             },
             post: {
+                operationId: "addTask",
                 summary: "Create a task",
-                description: "Create a new task",
+                description: "Create a new task.",
                 body: TaskRequest,
                 responses: { 201: TaskResponse },
-            },
+            }
         },
         "/tasks/{id}": {
             get: {
+                operationId: "getTask",
                 summary: "Get a task",
                 description: "Get a specific task by ID.",
                 path: {
@@ -40,6 +43,7 @@ type TasksApiSpec = Tspec.DefineApiSpec<{
                 },
             },
             put: {
+                operationId: "updateTask",
                 summary: "Update a task",
                 description: "Update a specific task by ID.",
                 path: {
@@ -53,6 +57,7 @@ type TasksApiSpec = Tspec.DefineApiSpec<{
                 },
             },
             delete: {
+                operationId: "deleteTask",
                 summary: "Delete a task",
                 description: "Delete a specific task by ID.",
                 path: {
@@ -62,9 +67,7 @@ type TasksApiSpec = Tspec.DefineApiSpec<{
                 responses: {
                     /** Task deleted */
                     204: "",
-                    /** Invalid params */
                     400: ProblemDetails
-                    /** Task not found */
                     404: ProblemDetails
                 }
             }
@@ -82,6 +85,9 @@ router.get('/', (req: Request, res: Response<Array<Task>>) => {
     res.json(tasks);
 });
 
+/** akjsd
+ * ajskdh
+ */
 router.post('/', taskValidationRules, (req: Request<TaskRequest>, res: Response<TaskResponse>) => {
     const errors = validationResult(req);
 

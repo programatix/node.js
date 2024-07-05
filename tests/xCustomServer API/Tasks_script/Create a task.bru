@@ -1,0 +1,80 @@
+meta {
+  name: Create a task
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/tasks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "",
+    "description": "",
+    "completed": ""
+  }
+}
+
+script:pre-request {
+  const iterationKey = "iteration";
+  const testVectors = JSON.parse(bru.getEnvVar("testVectors"));
+  
+  let iteration = bru.getEnvVar(iterationKey);
+  if (iteration == null) {
+    iteration = 0;
+    bru.setEnvVar(iterationKey,iteration);
+  }
+  req.setBody(testVectors[iteration].createTask.request.body);
+  
+}
+
+script:post-response {
+  const iterationKey = "iteration";
+  const testVectors = JSON.parse(bru.getEnvVar("testVectors"));
+  
+  let iteration = bru.getEnvVar(iterationKey);
+  if (iteration + 1 < testVectors.length) {
+    bru.setNextRequest("Create a task");
+  }
+}
+
+tests {
+  const _ = require('lodash');
+  
+  const iterationKey = "iteration";
+  const testVectors = JSON.parse(bru.getEnvVar("testVectors"));
+  
+  let iteration = bru.getEnvVar(iterationKey);
+  const vector = testVectors[iteration].createTask.response;
+  
+  test("Status oode", function() {
+    expect(res.getStatus()).to.equal(vector.status);
+  });
+  
+  test("Created data is correct", function() {
+    const data = res.getBody();
+    const status = res.getStatus();
+    
+    if (status >= 200 && status < 300) {
+      expect(data).to.deep.include(vector.body);
+    } else {
+      console.log(data['invalid-params']);
+      console.log(vector.body['invalid-params']);
+      
+      let result = true;
+      vector.body['invalid-params'].forEach(x => {
+        result &= _.some(data['invalid-params'], x);
+      })
+      
+      expect(result == 1).to.be.true;
+    }
+  });
+  
+  if (iteration < testVectors.length) {
+    iteration++;
+    bru.setEnvVar(iterationKey, iteration);
+  }
+}

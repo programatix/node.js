@@ -1,0 +1,42 @@
+[
+    {
+        "createTask": {
+            "request": {
+                "body": {
+                    "title": "Contact John Doe",
+                    "description": "A task to contact John Doe",
+                    "completed": false
+                }
+            },
+            "response": {
+                "body": {
+                    "title": "Contact John Doe",
+                    "description": "A task to contact John Doe",
+                    "completed": false
+                },
+                "status":201
+            }
+        }
+    },
+    {
+        "createTask": {
+            "request": {
+                "body": {
+                    "title": "Contact John Doe",
+                    "description": "A task to contact John Doe"
+                }
+            },
+            "response": {
+                "body": {
+                    "status": 400,
+                    "invalid-params": [
+                      {
+                        "name": "completed"
+                      }
+                    ]
+                  },
+                "status":400
+            }
+        }
+    }
+]

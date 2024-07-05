@@ -1,0 +1,14 @@
+{
+  "version": "1",
+  "name": "xCustomServer API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git",
+    "results"
+  ],
+  "presets": {
+    "requestType": "http",
+    "requestUrl": "{{baseUrl}}"
+  }
+}

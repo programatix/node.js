@@ -1,0 +1,22 @@
+meta {
+  name: Get a task
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/tasks/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: {{result_id}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: eq {{result_id}}
+  res.body.title: eq {{result_title}}
+  res.body.completed: eq {{result_completed}}
+}
