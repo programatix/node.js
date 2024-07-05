@@ -16,7 +16,7 @@ Sample servers are provided, placed in folders with the format, `server-[package
 *Swagger UI*
 
 ![OpenAPI Documentation](./images/openapi_doc.png)
-*OpenAPI Documentation - json*
+*OpenAPI Documentation (json)*
 
 # Test Tools
 ## Rest Client Extension for Visual Studio
