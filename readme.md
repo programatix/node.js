@@ -11,6 +11,11 @@ Sample servers are provided, placed in folders with the format, `server-[package
 - `server-tspec`
   - https://github.com/ts-spec/tspec
 
+# Swagger UI
+![Swagger UI](./images/swaggerui.png)
+
+![OpenAPI Documentation](./images/openapi_doc.png)
+
 # Test Tools
 ## Rest Client Extension for Visual Studio
 
