@@ -73,12 +73,13 @@ Bruno test scripts are located in ./tests/bruno
 ## Problem Details Response middleware
 Included in the sample server is the problem details response middleware which can help in standardizing error responses. Developer just throw an [`HttpError`](https://github.com/jshttp/http-errors) exception for it to trigger.
 
-Example #1
+### Example #1
 ```
 throw new createHttpError.NotFound("Task not found");
 ```
+![RestAPI - Not Found](./images/restapi_not_found.png)
 
-Example #2
+### Example #2
 ```
 const errors = validationResult(req);
 
@@ -87,3 +88,4 @@ if (!errors.isEmpty()) {
   throw createHttpError(err.status, err, { invalidParams: errors.array() });
 }
 ```
+![RestAPI - Bad Request](./images/restapi_bad_request.png)
