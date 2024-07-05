@@ -15,7 +15,7 @@ Sample servers are provided, placed in folders with the format, `server-[package
 
 Using the OpenAPI documentation (json or yaml format), it can be feed into Swagger UI (self hosted or uploaded to https://editor.swagger.io/), you'll obtain a Swagger UI page as shown below. Here the developers can use it to perform quick tests on the REST APIs that they developed. It also allow the Software Assurance team to familiarize themselves with the REST APIs.
 
-![Swagger UI](images/swaggerui.png)  
+![Swagger UI](images/swagger_ui.gif)  
 *Swagger UI*
 
 ![OpenAPI Documentation](images/openapi_doc.png)  
@@ -43,14 +43,11 @@ Flashpost (https://github.com/subasraj/flashpost-support/tree/main), a VS Code e
 Flashpost test scripts are located in ./Flashpost-tests
 
 ## Bruno
-![Bruno](images/bruno_howtouse.gif)
+![Bruno](images/bruno_howtouse.gif)  
 *Bruno Test Runner*
 
-![Bruno Test Report](images/bruno_report.gif)
-*Bruno Test Report - Summary (html)*
-
-![Bruno Test Report - Requests](images/bruno_test_report_requests.png)  
-*Bruno Test Report - Requests (html)*
+![Bruno Test Report](images/bruno_report.gif)  
+*Bruno Test Report (html)*
 
 Bruno (https://www.usebruno.com/) is a Fast and Git-Friendly Opensource API client, aimed at revolutionizing the status quo represented by Postman, Insomnia and similar tools out there.
 

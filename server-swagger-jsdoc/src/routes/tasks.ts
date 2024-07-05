@@ -130,7 +130,7 @@ router.get('/:id', (req: Request, res: Response<Task>) => {
 
 /**
  * @swagger
- *  /tasks: {
+ *  /tasks/{id}: {
  *      put: {
             tags: [Tasks],
             summary: "Update a task",
@@ -200,8 +200,8 @@ router.put('/:id', taskValidationRules, (req: Request, res: Response) => {
 
 /**
  * @swagger
- *  /tasks: {
- *      put: {
+ *  /tasks/{id}: {
+ *      delete: {
             tags: [Tasks],
             summary: "Delete a task",
             description: "Delete a specific task by ID.",
