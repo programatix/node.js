@@ -4,6 +4,8 @@ This repository is an example to automatic generate OpenAPI documentation (see h
 # Sample servers
 Sample servers are provided, placed in folders with the format, `server-[package]`, where the `[package]` represent the library used to perform the OpenAPI documentation generation.
 
+- `server`
+  - Plain server without OpenAPI documentation package.
 - `server-swagger-jsdoc`
   - https://github.com/Surnet/swagger-jsdoc
 - `server-tspec`
