@@ -1,5 +1,5 @@
 ## Swagger Components Installation
-`npm i tspec`
+`npm i tspec`  
 `npm update`
 
 ## Run server
