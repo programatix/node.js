@@ -67,3 +67,23 @@ Bruno test scripts are located in ./tests/bruno
 | http://localhost:3000/fetchDemo/client  | Performs a fetch from client  |
 | http://localhost:3000/tasks             | Tasks API                     |
 | http://localhost:3000/api-docs          | OpenAPI Documentation         |
+
+# Miscellaneous
+
+## Problem Details Response middleware
+Included in the sample server is the problem details response middleware which can help in standardizing error responses. Developer just throw an [`HttpError`](https://github.com/jshttp/http-errors) exception for it to trigger.
+
+Example #1
+```
+throw new createHttpError.NotFound("Task not found");
+```
+
+Example #2
+```
+const errors = validationResult(req);
+
+if (!errors.isEmpty()) {
+  const err = new createHttpError.BadRequest("Invalid request");
+  throw createHttpError(err.status, err, { invalidParams: errors.array() });
+}
+```
