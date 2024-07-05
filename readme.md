@@ -15,8 +15,12 @@ Sample servers are provided, placed in folders with the format, `server-[package
 ![Swagger UI](./images/swaggerui.png)  
 *Swagger UI*
 
+Using the OpenAPI documentation (json or yaml format), it can be feed into Swagger UI (self hosted or uploaded to https://editor.swagger.io/), you'll obtain a Swagger UI page as shown above. Here the developers can use it to perform quick tests on the REST APIs that they develop. It also allow the Software Assurance team to familiarize themselves with the REST APIs.
+
 ![OpenAPI Documentation](./images/openapi_doc.png)  
 *OpenAPI Documentation (json)*
+
+The above is the OpenAPI documentation in json format.
 
 # Test Tools
 ## Rest Client Extension for Visual Studio
