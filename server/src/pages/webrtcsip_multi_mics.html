@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+
+<head>
+    <title>Web RTC SIP</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <!--
+    <div>
+        <audio controls autoplay="autoplay" id="audioCtl" />
+    </div>
+    -->
+
+    <div>
+        <input type="text" id="websockurl" size="40" />
+        <button type="button" class="btn btn-success" onclick="getAudio();">Create Audio</button>
+        <button type="button" class="btn btn-success" onclick="start();">Start</button>
+        <button type="button" class="btn btn-success" onclick="closePeer();">Close</button>
+    </div>
+    <div>
+        <div id="msg"></div>
+    </div>
+</body>
+
+<script type="text/javascript">
+
+    const STUN_URL = "stun:stun.sipsorcery.com";
+    const WEBSOCKET_URL = "wss://127.0.0.1:57090/"
+
+    const msgElement = document.getElementById("msg");
+
+    function getAudio() {
+        const elementId = "audioCtl";
+
+        // Attempt to get the audioElement
+        let audioElement = document.getElementById(elementId);
+        if (audioElement == null) {
+            // audoElement does not exist, create it and insert it into document.
+            audioElement = document.createElement("audio");
+            audioElement.id = elementId;
+            audioElement.autoplay = "autoplay";
+            document.body.appendChild(audioElement);
+        }
+
+        return audioElement
+    }
+
+        async function getPermissions() {
+        if (!!navigator?.permissions) {
+            return (
+                navigator.permissions
+                    // @ts-ignore - ignore because microphone is not in the enum of name for all browsers
+                    ?.query({ name: 'microphone' })
+                    .then((result) => result.state)
+                    .catch((err) => {
+                        return 'prompt';
+                    })
+            );
+        }
+        return 'prompt';
+    }
+
+        async function start() {
+        const localStreams = [];
+        const senders = [];
+        const sources = [];
+
+        const audioContext = new AudioContext();
+        const mediaStreamDestination = audioContext.createMediaStreamDestination();
+        let rtcRtpSender = null;
+
+        async function connectMicsToPeer() {
+            sources.forEach(source => source.disconnect());
+
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            console.debug("devices:", devices);
+
+            // Add an audio source to the peer connection.
+            await devices
+                .filter(device => device.kind == 'audioinput' && device.deviceId !== "default" && device.deviceId !== "communications")
+                .forEach(async (device) => {
+                    console.debug("device:", device);
+                    const localStream = await navigator.mediaDevices.getUserMedia({ video: false, audio: { deviceId: { exact: device.deviceId } } });
+                    if (localStream != null) {
+                        console.debug("localStream:", localStream);
+                        const source = audioContext.createMediaStreamSource(localStream);
+                        source.connect(mediaStreamDestination);
+                        sources.push(source);
+                        localStreams.push(localStream);
+                    }
+                });
+        }
+
+        // Get the audioElement
+        const audioElement = getAudio();
+
+        // Close previously opened RTCPeerConnection and WebSocket.
+        if (audioElement.disposableObjects != null) {
+            closeAudioElement(audioElement);
+        }
+
+        const permissions = await getPermissions();
+        switch (permissions) {
+            case 'granted':
+                console.debug("Permission granted");
+                break;
+            case 'prompt':
+                console.debug("Permission prompt");
+                // Call getUserMedia() to get microphone permission
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                // Close the stream since it is used just to get permission
+                stream?.getTracks()?.forEach(track => track.stop())
+                break;
+            case 'denied':
+                console.debug("Permission denied");
+                break;
+        }
+
+        // Register event(s)
+        navigator.mediaDevices.ondevicechange = async (event) => {
+            console.debug("Hey! Something has changed!", event);
+
+            localStreams.forEach(localStream => {
+                const tracks = localStream.getTracks();
+                console.debug("tracks:", tracks);
+                tracks.forEach(track => {
+                    track.stop();
+                    localStreams.splice(localStreams.indexOf(localStream), 1);
+                })
+            });
+
+            await connectMicsToPeer();
+        };
+
+        await connectMicsToPeer();
+
+        // Add local stream to peer connection and store the RTCRtpSender.
+        const pc = new RTCPeerConnection({ iceServers: [] });
+        rtcRtpSender = pc.addTrack(mediaStreamDestination.stream.getAudioTracks()[0]);
+
+        // Add remote stream to local speaker output
+        pc.ontrack = evt => {
+            console.debug("Remote Streams:", evt.streams);
+            audioElement.srcObject = evt.streams[0];
+        }
+        pc.onicecandidate = evt => evt.candidate && ws.send(JSON.stringify(evt.candidate));
+
+        // Diagnostics.
+        pc.onicegatheringstatechange = () => console.log("onicegatheringstatechange: " + pc.iceGatheringState);
+        pc.oniceconnectionstatechange = () => console.log("oniceconnectionstatechange: " + pc.iceConnectionState);
+        pc.onsignalingstatechange = () => console.log("onsignalingstatechange: " + pc.signalingState);
+        pc.onconnectionstatechange = () => console.log("onconnectionstatechange: " + pc.connectionState);
+
+        const ws = new WebSocket(document.querySelector('#websockurl').value, []);
+        ws.onclose = async function (evt) {
+            msgElement.innerHTML = '';
+        };
+        ws.onmessage = async function (evt) {
+            if (/^[\{"'\s]*candidate/.test(evt.data)) {
+                pc.addIceCandidate(JSON.parse(evt.data));
+            }
+            else {
+                await pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(evt.data)));
+                pc.createAnswer()
+                    .then((answer) => {
+                        // extract SdpSessionId out
+                        let lines = answer.sdp.split('\n')
+                            .map(l => l.trim()); // split and remove trailing CR
+                        lines.forEach(function (line) {
+                            const keyname = 'o=- ';
+                            if (line.indexOf(keyname) === 0) {
+                                let value = line.substring(keyname.length);
+                                let parts = value.split(' ');
+
+                                msgElement.innerHTML += `SdpSessionId:<br />${parts[0]}<br />`;
+                            }
+                        });
+
+                        return pc.setLocalDescription(answer);;
+                    })
+                    .then(() => ws.send(JSON.stringify(pc.localDescription)));
+            }
+        };
+
+        // Store RTCPeerConnection and WebSocket objects inside the audioElement
+        audioElement.disposableObjects = {
+            pc,
+            ws,
+            localStreams,
+            audioContext,
+        };
+    };
+
+    async function closeAudioElement(audioElement) {
+        if (audioElement != null) {
+            if (audioElement.disposableObjects != null) {
+                // Close the RTCPeerConnection
+                await audioElement.disposableObjects.pc?.close();
+                // Close the WebSocket
+                await audioElement.disposableObjects.ws?.close();
+                // Stop the local stream (the microphone)
+                audioElement.disposableObjects.localStreams?.forEach(localStream =>
+                    localStream?.getTracks()?.forEach(track => track.stop()));
+                // Close
+                audioElement.disposableObjects.audioContext?.close();
+                // Remove objects placeholder
+                audioElement.disposableObjects = null;
+            }
+            audioElement.pause();
+            document.body.removeChild(audioElement);
+        }
+    }
+
+    async function closePeer() {
+        await closeAudioElement(getAudio());
+    };
+
+    document.querySelector('#websockurl').value = WEBSOCKET_URL;
+</script>

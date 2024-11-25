@@ -20,6 +20,10 @@ const initServer = async () => {
     res.sendFile(path.join(__dirname, "./pages/index.html"));
   });
 
+  app.get("/sip", (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, "./pages/webrtcsip_multi_mics.html"));
+  });
+
   app.use('/form', formRoutes);
   app.use('/tasks', taskRoutes);
   app.use('/fetchDemo', fetchDemoRoutes);
