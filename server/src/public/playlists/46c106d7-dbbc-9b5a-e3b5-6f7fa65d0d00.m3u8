@@ -1,0 +1,3 @@
+#EXTM3U
+#EXT-X-STREAM-INF:BANDWIDTH=624816
+https://192.168.82.177:7001/web/hls/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8?authKey=08b6a995-71cf-4702-890b-046b1748ebaf&hi&chunked&sessionID=69&hi

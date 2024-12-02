@@ -1,0 +1,67 @@
+<!-- CSS  -->
+<link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">
+
+
+<!-- HTML -->
+<button onclick="playVideos(4)">Start 4</button>
+<button onclick="playVideos(8)">Start 8</button>
+<button onclick="playVideos(9)">Start 9</button>
+
+<h1>1</h1>
+<video id='hls-example1' class="video-js vjs-default-skin" width="640" height="360" controls>
+    <source type="application/x-mpegURL" src="/playlists/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8">
+</video>
+
+<h1>2</h1>
+<video id='hls-example2' class="video-js vjs-default-skin" width="640" height="360" controls>
+    <source type="application/x-mpegURL" src="/playlists/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8">
+</video>
+
+<h1>3</h1>
+<video id='hls-example3' class="video-js vjs-default-skin" width="640" height="360" controls>
+    <source type="application/x-mpegURL" src="/playlists/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8">
+</video>
+
+<h1>4</h1>
+<video id='hls-example4' class="video-js vjs-default-skin" width="640" height="360" controls>
+    <source type="application/x-mpegURL" src="/playlists/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8">
+</video>
+
+<h1>5</h1>
+<video id='hls-example5' class="video-js vjs-default-skin" width="640" height="360" controls>
+    <source type="application/x-mpegURL" src="/playlists/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8">
+</video>
+
+<h1>6</h1>
+<video id='hls-example6' class="video-js vjs-default-skin" width="640" height="360" controls>
+    <source type="application/x-mpegURL" src="/playlists/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8">
+</video>
+
+<h1>7</h1>
+<video id='hls-example7' class="video-js vjs-default-skin" width="640" height="360" controls>
+    <source type="application/x-mpegURL" src="/playlists/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8">
+</video>
+
+<h1>8</h1>
+<video id='hls-example8' class="video-js vjs-default-skin" width="640" height="360" controls>
+    <source type="application/x-mpegURL" src="/playlists/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8">
+</video>
+
+<h1>9</h1>
+<video id='hls-example9' class="video-js vjs-default-skin" width="640" height="360" controls>
+    <source type="application/x-mpegURL" src="/playlists/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.m3u8">
+</video>
+
+<script src="https://unpkg.com/video.js/dist/video.min.js"></script>
+<script>
+    function playVideos(videoCount) {
+        for (let i = 0; i < videoCount; i++) {
+            const player = videojs('hls-example' + (i + 1), {
+                autoplay: true
+            });
+            player.play();
+        }
+    }
+</script>
+
+<!-- JS code -->

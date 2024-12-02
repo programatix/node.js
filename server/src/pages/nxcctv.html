@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #button-container {
+            margin: 20px;
+        }
+
+        #button-container button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #video-container {
+            display: grid;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        #video-container.grid-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        #video-container.grid-9 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        video {
+            width: 640px;
+            height: 480px;
+            background-color: black;
+        }
+    </style>
+    <link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">
+</head>
+
+<div id="button-container">
+    <button onclick="playVideos(4)">Four</button>
+    <button onclick="playVideos(9)">Nine</button>
+</div>
+
+<video id="some_video_element" autoplay type="video/mp4"></video>
+<div id="video-container"></div>
+
+<script>
+    //const streamUrl = "https://192.168.81.213:48000/v1/xvss/stream?authenticatedUrl=https%3A%2F%2F192.168.82.177%3A7001%2Fmedia%2F46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.mp4&token=vms-f0aadf8f2ee249841235e51270bb0363-jU89Ns3r66";
+    //const streamUrl = "http://localhost:3000/stream?authenticatedUrl=https%3A%2F%2F192.168.82.177%3A7001%2Fmedia%2F46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.mp4&token=vms-f0aadf8f2ee249841235e51270bb0363-jU89Ns3r66";
+    const streamUrl = "https://localhost:7037/WeatherForecast/stream?authenticatedUrl=https%3A%2F%2F192.168.82.177%3A7001%2Fmedia%2F46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.mp4&token=vms-f0aadf8f2ee249841235e51270bb0363-jU89Ns3r66";
+    //const streamUrl = "https://192.168.82.177:7001/media/46c106d7-dbbc-9b5a-e3b5-6f7fa65d0d00.mp4";
+    const token = "vms-f0aadf8f2ee249841235e51270bb0363-jU89Ns3r66";
+
+    /*xhook.before(function (request, callback) {
+        console.log("hello");
+        if (request.url.startsWith("https://192.168.82.177")) {
+            request.xhr.setRequestHeader('Authorization', 'Bearer vms-f0aadf8f2ee249841235e51270bb0363-jU89Ns3r66');
+        }
+        callback();
+    });
+
+    xhook.after(function (request, response) {
+        console.log("bye");
+    });*/
+
+    /*const a = new XMLHttpRequest();
+    a.open('GET', streamUrl, true);
+    a.setRequestHeader('Authorization', 'Bearer vms-f0aadf8f2ee249841235e51270bb0363-jU89Ns3r66');
+    a.onload = () => {
+        const blob_uri = URL.createObjectURL(this.response);
+        const some_video_element = document.getElementById("some_video_element");
+        some_video_element.appendChild(document.createElement("source")).src = blob_uri;
+    }
+    a.responseType = "arraybuffer";
+    a.send();*/
+
+    const videoTag = document.getElementById("some_video_element");
+    const myMediaSource = new MediaSource();
+    const url = URL.createObjectURL(myMediaSource);
+    videoTag.src = url;
+
+    myMediaSource.addEventListener('sourceopen', () => {
+        console.log('Source Opened');
+
+        const videoSourceBuffer = myMediaSource
+            .addSourceBuffer('video/mp4;codecs="avc1.4d001e"');
+
+        fetch(streamUrl, {
+            method: 'GET',
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                /*"Accept": "video/mp4",
+                "Content-Type": "video/mp4",*/
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+            }/*,
+            auth: {
+                username: "admin",
+                password: "Willow@1"
+            }*/
+        }).then(function (response) {
+            // The data has to be a JavaScript ArrayBuffer
+            return response.arrayBuffer();
+        }).then(function (videoData) {
+            videoSourceBuffer.appendBuffer(videoData);
+        });
+    });
+
+
+    /*
+const blob = await res.blob();
+const newBlob = new Blob([blob]);
+
+const blobUrl = window.URL.createObjectURL(newBlob);
+const some_video_element = document.getElementById("some_video_element");
+some_video_element.appendChild(document.createElement("source")).src = blobUrl;*/
+
+    function playVideos(videoCount) {
+        const videoContainer = document.getElementById('video-container');
+
+        // Terminate existing videos
+        const existingVideos = videoContainer.querySelectorAll('video');
+        existingVideos.forEach(video => {
+            video.pause(); // Stop playback
+            video.src = ""; // Clear the source to release the resource
+            video.load(); // Reset the video element
+        });
+
+        videoContainer.innerHTML = '';
+
+        // Set grid class based on number of streams
+        videoContainer.className = videoCount === 4 ? 'grid-4' : 'grid-9';
+
+        for (let i = 0; i < videoCount; i++) {
+            const video = document.createElement('video');
+            video.src = streamUrl;
+            video.autoplay = true;
+            video.className = 'video-js';
+
+            videoContainer.appendChild(video);
+        }
+    }
+</script>
+
+</html>
